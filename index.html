@@ -6,23 +6,29 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
 	<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Work+Sans&display=swap" rel="stylesheet">
 	<meta name="description" content="">
 	<link rel="stylesheet" href="./assets/style.css">
 </head>
 <body>
+	<!-----HEADER NAV BAR------>
 <header>
+	<div class="modeEdition" style="display: none">
+		<a href="#" class="iconePen"><i class="fa-regular fa-pen-to-square"></i></a>
+		<p>Mode édition</p>
+	</div>
 	<h1>Sophie Bluel <span>Architecte d'intérieur</span></h1>
 	<nav>
 		<ul>
 			<a href="#projet"><li>projets</li></a>
 			<a href="#contact"><li>contact</li></a>
-			<a href="login.html"><li>login</li></a>
+			<a href="login.html"><li id="loginNav">login</li></a>
 			<li><img src="./assets/icons/instagram.png" alt="Instagram"></li>
 		</ul>
 	</nav>
 </header>
-
+<!------INTRODUCTION-->
 <main>
 	<section id="introduction">
 		<figure>
@@ -35,12 +41,96 @@
 			<p>En cas de besoin, une équipe pluridisciplinaire peut-être constituée : architecte DPLG, décorateur(trice)</p>
 		</article>
 	</section>
+
+	<!--Bouton pour ouvrir la modal-->
 	<section id="portfolio">
-		<h2 id="projet">Mes Projets</h2>
+		
+		<div class="modify">
+            <h2 id="projet">Mes Projets</h2>
+
+			<div class="iconModify" style="visibility:hidden;">
+				<div>
+					<a href="#modale1" class="modify">modifier</a>
+				</div>
+				<div>
+					<a href="#modale1" class="icone"><i class="fa-regular fa-pen-to-square"></i></a>
+				</div>
+			</div>
+        </div>
+
+	<!--CREATION DE LA MODALE 1-->
+	<aside id="modal1" class="modal-container" style="display: none">
+		
+		<div  class="window-modal">
+			<span class="close-modal-button"><i class="fa-solid fa-xmark"></i></span>
+			<h2 class="title-gallery">Galerie photo</h2>
+
+			<div id="works-modal">	
+
+			</div>
+			<div class="line"></div>
+			<div class="add addModal">
+				<button type="button" id="add-picture">Ajouter une photo</button>
+			</div>
+
+		</div>
+	</aside>
+	<!--CREATION DE LA MODALE 2-->
+	<aside id="modal2" class="modal-container2" style="display: none">
+		
+		<div class="window-modal2">
+			<div class="iconFlex">
+				<span class="close-modal2-button"><i class="fa-solid fa-xmark"></i></span>
+				<a href="#modal1"><span class="arrow-left"> <i class="fa-solid fa-arrow-left"></i></span></a>	
+			</div>			
+			<h2 class="title-gallery">Ajout photo</h2>
+
+			<!--FORMULAIRE MODALE 2-->
+			<div id="add-picture-file">	
+					<form action="" method="post" id="form-add-picture" name="form-add-picture">	
+						<!--AJOUT IMAGE TYPE FILE-->
+						<div class="ajoutPhotoSpace" id="ajoutPhotoSpace">
+							<i class="fa-sharp fa-regular fa-image" id="iconeLandscape"></i> 
+							<label for="plusAjoutPhoto" > + Ajouter photo</label>							
+							<input type="file" name="image" id="plusAjoutPhoto" accept="image/png, image/jpg" class="inputForm" style="opacity: 0;" required>
+							
+							<p id="tailleFichier">jpg, png : 4mo max</p>
+						</div>
+						<img src="" id="imagePreview" alt="Apperçu de l'image">
+
+						
+
+						<!--TITRE DU CHAMP-->
+						<div class="input-title-categ">
+							<div class="input">
+								<label for="title"> Titre</label>
+								<input type="text" name="title" id="title" required>
+							</div>
+								
+							<h3>Catégories</h3>
+							<div class="choix-catego-img">
+								<!-- SELECT && OPTIONS -->
+								<select id="selectOptions" name="category"> 
+									<!-- Options générées dynamiquement avec JavaScript -->
+									
+								</select>							  
+							</div>
+						
+							<div class="line"></div>
+							<div class="add ">
+								<button type="submit" id="valid">Valider</button>
+							</div>
+						</div>
+				</form>
+			</div>
+			
+		</div>
+	</aside>
 
 		<!-- CATEGORIES -->
+
 		<div class="filters">
-			<button id="0"> TOUS </button>
+			<!-- bouton "TOUS" générées dynamiquement avec JavaScript -->
 		</div>
 		
 		<!-- WORKS -->
@@ -91,6 +181,8 @@
 			</figure>
 		</div>
 	</section>
+
+	<!--FORMULAIRE DE CONTACT -->
 	<section id="contact">
 		<h2>Contact</h2>
 		<p>Vous avez un projet ? Discutons-en !</p>
@@ -113,8 +205,9 @@
 		</ul>
 	</nav>
 </footer>
-<script src="./JavaScript/index.js"></script>
-<!-- <script src="./JavaScript/login.js"></script> -->
+<script src="./JavaScript/index.js" ></script>
+<script src="./JavaScript/login.js"></script>
+
 
 
 </body>

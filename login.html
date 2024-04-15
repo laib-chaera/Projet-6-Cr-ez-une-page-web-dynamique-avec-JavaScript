@@ -10,13 +10,13 @@
 </head>
 <body>
     <header>
-        <h1>Sophie Bluel <span>Architecte d'intérieur</span></h1>
+        <a href="index.html" class="logo"><h1>Sophie Bluel <span>Architecte d'intérieur</span></h1></a>
         <nav>
             <ul>
-                <li>projets</li>
-                <li>contact</li>
-                <li>login</li>
-                <li><img src="./assets/icons/instagram.png" alt="Instagram"></li>
+                <a href="#"><li>projets</li></a>
+                <a href="#"><li>contact</li></a>
+                <a href="login.html"><li id="loginNav">login</li></a>
+                <a href="#"><li><img src="./assets/icons/instagram.png" alt="Instagram"></li></a>
             </ul>
         </nav>
     </header>
@@ -27,10 +27,10 @@
             <form action="#"method="post" class="formulaire-login">
 
                 <label for="email">E-mail </label>
-                <input type="email" name="email" id="email" value="" required>
+                <input type="email" name="email" id="email"  required>
 
                 <label for="password"> Mot de passe</label>
-                <input type="password" name="password" id="password" value="" required>
+                <input type="password" name="password" id="password"  required>
 
                 <input type="submit" value="Se connecter">
                 <!-- <a href="index.html">Se connecter</a> -->
@@ -48,9 +48,7 @@
             </ul>
         </nav>
     </footer>
-
-    <!-- <script src="./JavaScript/index.js"></script> -->
-    <script src="./JavaScript/login.js" defer></script>
-   
+    <!-- <script src="./JavaScript/index.js" ></script> -->
+    <script src="./JavaScript/login.js"></script>
 </body>
 </html>

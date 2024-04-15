@@ -1,4 +1,7 @@
 
+.logo{
+	text-decoration: none;
+}
 #login{
 	width: 50%;
 	margin: auto;

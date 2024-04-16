@@ -224,7 +224,7 @@ li:hover {
 	display: grid;
 	grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
 	grid-column-gap: 10px;
-	grid-row-gap: 30px;
+	grid-row-gap: 15px;
 	margin: 0 auto;
 	margin-top: 30px;
 	margin-bottom: 30px;
@@ -233,7 +233,7 @@ li:hover {
 	width: 100%;
 	object-position: center;
 	object-fit: cover;
-	height: 11vh;
+	height: 8vh;
 }
 .deleteIcon{
 	position: relative;

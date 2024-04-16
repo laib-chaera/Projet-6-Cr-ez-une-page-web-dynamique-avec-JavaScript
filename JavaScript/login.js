@@ -10,7 +10,7 @@ if (formulaireLogin) {
 
 //Fonction pour gérer l'envoi du formulaire de connexion
 async function listenerEnvoyerLogin(event) {
-    event.preventDefault()  //empécher le chargement de la page et à la place exécuter les instruction qui suivent)
+    event.preventDefault()  
 
         //Création d'un objet javascript qui récupère les valeur saisie et les envoyer à l'API 
         const emailPassword = {
@@ -31,7 +31,7 @@ async function listenerEnvoyerLogin(event) {
         
         let result = await response.json()// convertit la réponse du serveur (de JSON en un objet JavaScript.) 
 
-        // vérification si token d'authentification ok et statut = 200 
+        // vérification si token d'authentification ok ou le statut = 200 
         if (result.token || response.status === 200) {
             
             // Enregistrer le token avec localStorage et rediriger vers la page index en mode connecté
@@ -39,9 +39,7 @@ async function listenerEnvoyerLogin(event) {
             window.location.href = 'index.html'; 
                     
         } else {
-            // Si le token est null ou si la réponse n'est pas égale à 200
-            // Afficher une erreur
-            alert('Erreur dans l’identifiant ou le mot de passe.');
+                        alert('Erreur, veillez vérifier votre identifiant ou votre mot de passe');
         }
             
 }

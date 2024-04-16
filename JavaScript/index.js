@@ -1,4 +1,4 @@
-
+// I) POUR LA PAGE D'ACCUEIL NON CONNECTE
 
 //Récupérer les travaux depuis une API avec l'URL de la route du backend
 const worksApi = "http://localhost:5678/api/works" 
@@ -16,7 +16,7 @@ async function getWorks() {
     }  
     catch   (error) { 
             console.error(error)
-        } 
+    } 
 }
 
 //Créer dynamiquement les éléments HTML (les travaux ) et les afficher sur la page web.
@@ -43,7 +43,7 @@ async function displayWork() {
 }
 displayWork()
 
-//Ajouter les filtres pour afficher les travaux par catégorie
+//AJOUTER LES FILTRES POUR AFFICHER LES TRAVAUX PAR CATÉGORIE
 
 //fonction asynchrone pour récupérer les catégories depuis l'API
 async function getCategories() {
@@ -56,7 +56,7 @@ async function getCategories() {
     }  
 }
 
-//// Fonction asynchrone pour créer dynamiquement les boutons de catégorie
+// Fonction asynchrone pour créer dynamiquement les boutons de catégorie
 async function creatCategoryBtn() {
     const allCategories = await getCategories()
     
@@ -67,7 +67,7 @@ async function creatCategoryBtn() {
         btn.id = category.id
         filtersContainer.appendChild(btn)
 
-        // Ajout d'un écouteur d'événement sur chaque bouton pour filtrer
+        // Ajout d'un écouteur d'événement sur le bouton pour filtrer
         btn.addEventListener("click", ()=>{
             filterWorksByCategory(btn.id)// Appeler la fonction avec l'id de la catégorie comme argument 
         })
@@ -75,16 +75,16 @@ async function creatCategoryBtn() {
 }
 creatCategoryBtn()
 
+//Filtrer les travaux par catégorie avec filter()
 async function filterWorksByCategory(buttonId) {
     const allWorks = await getWorks()
     
-    // Fonction pour filtrer les travaux par catégorie
     let filteredWorks; // variable pour stocker les travaux filtrés
     filteredWorks = allWorks.filter(work => work.categoryId.toString() === buttonId.toString()) // récupère la valeur des id catégorie qui sont égale à la valeur des id btn 
 
     galleryContainer.innerHTML = '' // Nettoyage de la galerie avant affichage des résultats filtrés
     
-    // Affichage des travaux filtrés
+    // Création et affichage dynamique des travaux filtrés
     filteredWorks.forEach((work) => {
         const figure = document.createElement("figure")
         const img = document.createElement("img")
@@ -114,128 +114,140 @@ function creatBtnAll() {
 }
 creatBtnAll()
 
+//  II) POUR LE FORMULAIRE DE CONNECTION
 
-// Sélection des éléments du DOM pour la gestion de l'authentification et modification
-
-    const loginButton = document.getElementById("loginNav")
-    const iconModify = document.querySelector(".iconModify")
-    const modeEdition = document.querySelector('.modeEdition')
-
-
-// Récupération du token d'authentification depuis le localStorage dans le fichier login.js
+// Récupération du token d'authentification 
     const userToken=localStorage.getItem('token') 
     
-    //Condition pour afficher/masquer certains éléments en fonction de l'authentification
+//Condition pour afficher/masquer certains éléments qand connecté
+    const loginButton = document.getElementById("loginNav")
+    const iconModify = document.querySelector(".iconModify")
+    const modeEdition = document.querySelector(".modeEdition")
+
     if (userToken) {
         loginButton.innerText = "logout"
         iconModify.style="visibility:visible"
         filtersContainer.style.display="none"
         modeEdition.style.display='flex'
         
-        //Pour la déconnection
-        loginButton.addEventListener('click', function(){
-            localStorage.removeItem('token')
-            window.location.href = 'login.html'
-        })
-    }else{
-        alert('Erreur dans l’identifiant ou le mot de passe.')
-    }
-
-// Gestion des modales pour l'ajout et la suppression des travaux
-const modal = document.querySelector('.modal-container')
-
-// Ajoutez un écouteur d'événement au bouton ou au lien
-iconModify.addEventListener('click', () => {
-    modal.style.display = null
-  })
-
-//fonction asynchrone pour récupérer les works et les afficher dans la modal
-async function displayWorksModal() {
-    const allWorks = await getWorks()        
-    const containerWorksModal1 = document.getElementById('works-modal')
-    containerWorksModal1.innerHTML = ''
-
-    allWorks.forEach(work => {
-      const figure =  document.createElement('figure') 
-      const img = document.createElement('img')
-      const iconTrash = document.createElement('i')
-      const divTrash = document.createElement('div')
-
-    // Configuration de l'image
-      img.src = work.imageUrl
-      img.setAttribute('data-id', work.id) 
-
-      // Configuration de l'icône de suppression
-      iconTrash.classList.add("fa", "fa-trash-can") // Ajouter les classes FontAwesome
-      iconTrash.setAttribute('data-id', work.id)
-      figure.classList.add('figureParent')
-      figure.setAttribute('data-id',work.id)
-      divTrash.setAttribute('data-id', work.id)
-      divTrash.classList.add('divTrash')
-
-    // Ajout des éléments au DOM
-      containerWorksModal1.appendChild(figure)
-      figure.appendChild(img)
-      figure.appendChild(divTrash)
-      divTrash.appendChild(iconTrash)
-
-
-      iconTrash.addEventListener('click', async function() {
-        // Récupération de l'identifiant de l'élément iconTrash :
-        const workId = this.getAttribute('data-id')
+     } 
     
-        // Demander confirmation avant d'envoyer la requête DELETE
-        const userConfirmed = confirm("Voulez-vous vraiment supprimer ce projet ?")
-    
-        // Gestion des erreurs avec try...catch
-        try {
-            // Récupérer le token d'authentification stocké dans le localStorage avec getItem
-            const authToken = localStorage.getItem('token')
-            
-    
-            // Envoyez une requête DELETE à l'API pour supprimer l'image
-            const response = await fetch(`${worksApi}/${workId}`, {
-                method: 'DELETE',
-                headers: {
-                    // Inclure le token d'authentification dans les en-têtes de la requête
-                    'Authorization': `Bearer ${authToken}`
-                }
-            });
-    
-            if (response.ok) {
-              figure.remove()
-                // Supprimer l'élément figure parent après confirmation et succès de la requête
-                const removeImg = document.getElementById(workId).parentNode.remove()
-                
-                // alert('Œuvre supprimée avec succès.')
-            } else {
-                alert('Erreur lors de la suppression de l\'œuvre.')
-            }
-        } catch (error) {
-            console.error('Erreur lors de la suppression :', error)
-        }
-    });
+//Déconnexion
+      loginButton.addEventListener('click', function(){
+        localStorage.removeItem('token')
+        window.location.href = 'index.html'
+
+      })
+
+// GESTION DES MODALES POUR L'AJOUT ET LA SUPPRESSION DES TRAVAUX
+
+    const modal = document.querySelector('.modal-container')
+
+// Ajoutez un écouteur d'événement au bouton ou au lien pour afficher la modale
+    iconModify.addEventListener('click', () => {
+        modal.style.display = null
     })
-  }
+
+//fonction asynchrone pour récupérer et afficher les works dans la modal 1
+    async function displayWorksModal() {
+        const allWorks = await getWorks()        
+        const containerWorksModal1 = document.getElementById('works-modal')
+
+        containerWorksModal1.innerHTML = ''
+
+        allWorks.forEach(work => {
+          const figure =  document.createElement("figure") 
+          const img = document.createElement("img")
+          const iconTrash = document.createElement("i")
+          const divTrash = document.createElement("div")
+
+          // Configuration de l'image
+          img.src = work.imageUrl
+          img.setAttribute('data-id', work.id) 
+
+          // Configuration de l'icône de suppression
+          iconTrash.classList.add("fa", "fa-trash-can") 
+          iconTrash.setAttribute('data-id', work.id)
+          
+          divTrash.classList.add('divTrash')
+          divTrash.setAttribute('data-id', work.id)
+          
+
+          figure.classList.add('figureParent')
+          figure.setAttribute('data-id',work.id)
+          
+
+         // Ajout des éléments au DOM
+
+          divTrash.appendChild(iconTrash)
+          figure.appendChild(img)
+          figure.appendChild(divTrash)
+          containerWorksModal1.appendChild(figure)
+
+
+          iconTrash.addEventListener('click', async function() {
+            // Récupération de l'ID de l'élément iconTrash à supprimer
+            const workId = this.getAttribute('data-id')
+        
+            // Demander confirmation avant d'envoyer la requête DELETE A LA BASE DE DONNEES
+            const userConfirmed = confirm("Voulez-vous vraiment supprimer ce projet ?")
+            if (userConfirmed) {
+        
+              try {
+                  // Récupérer le token avant d'envoyer la requête
+                  const authToken = localStorage.getItem('token')
+                  
+          
+                  // Envoyez une requête DELETE à l'API pour supprimer l'image
+                  const response = await fetch(`${worksApi}/${workId}`, {
+                      method: 'DELETE',
+                      headers: {
+                          // Inclure le token d'authentification dans les en-têtes de la requête
+                          'Authorization': `Bearer ${authToken}`
+                      }
+                  });
+          
+                  if (response.ok) {
+                    // L'élément correspondant au workId est supprimé de la page d'accueil 
+                      document.getElementById(workId).parentNode.remove();
+
+                    // L'élément correspondant au workId est également supprimé de la modale
+                      const modalImageElement = document.querySelector(`#works-modal [data-id="${workId}"]`);
+                      if (modalImageElement) {
+                          modalImageElement.remove();
+                      }
+                    
+                      // alert('Œuvre supprimée avec succès.')
+                  } else {
+                      alert('Erreur lors de la suppression de l\'œuvre.')
+                    }
+
+              } catch (error) {
+                  console.error('Erreur lors de la suppression :', error)
+                }
+            }
+          });
+        })
+     }
 displayWorksModal()
 
 function closeModal1(){
-  //fermeture de la modale en cliquant sur le bouton de fermeture
-  const closeModalButton = document.querySelector('.close-modal-button')
-  closeModalButton.addEventListener('click', function() {
-      modal.style.display = 'none' // Fermer la modale
-  });
+    //fermeture de la modale en cliquant sur le bouton de fermeture
+    const closeModalButton = document.querySelector('.close-modal-button')
+    closeModalButton.addEventListener('click', function() {
+        modal.style.display = 'none' // Fermer la modale
+    });
 
-  //fermeture de la modale en cliquant  en dehors de la fenêtre modale
-  modal.addEventListener('click', function() {
-      modal.style.display = 'none' // Fermer la modale
-  });
+    //fermeture de la modale en cliquant  en dehors de la fenêtre modale
+    modal.addEventListener('click', function() {
+        modal.style.display = 'none' // Fermer la modale
+    });
 
-  // Empêche l'événement de clic de se propager à l'élément parent
-  const windowModal1 = document.querySelector('.window-modal') 
-  windowModal1.addEventListener('click', function(event) {
-      event.stopPropagation() 
-  });
+    // Empêche l'événement de clic de se propager à l'élément parent
+    const windowModal1 = document.querySelector('.window-modal') 
+    windowModal1.addEventListener('click', function(event) {
+        event.stopPropagation() 
+    });
 }
 closeModal1()
 
@@ -323,7 +335,7 @@ async function generateCategoryOptions() {
 }
 generateCategoryOptions();
 
-//ajouter une fichier (image) dans la formulaire de la modale 2
+//ajouter un fichier (image) dans la formulaire de la modale 2
 function addFileImg() {
   const inputFile=document.getElementById('plusAjoutPhoto')
   const imagePreview = document.getElementById('imagePreview')
@@ -390,7 +402,7 @@ form.addEventListener('submit', async function(event) {
           }else{
             let resultwork = await response.json();
                      
-          // Ajout de l'élément dans la galerie index sans recharger la page
+          // Ajout d'un work dans la galerie index sans recharger la page
                 const figure = document.createElement("figure")
                 const img = document.createElement("img");
                 const figcaption = document.createElement("figcaption")
@@ -406,44 +418,89 @@ form.addEventListener('submit', async function(event) {
 
              
 
-          // Ajout de l'élément dans la modal sans recharger la page
-                const figureModal =  document.createElement('figure') 
-                const imgModal = document.createElement('img')
-                const iconTrash = document.createElement('i')
-                const divTrash = document.createElement('div')
+          // Création d'un work dans la modal sans recharger la page
+                const figureModal =  document.createElement("figure") 
+                const imgModal = document.createElement("img")
+                const iconTrash = document.createElement("i")
+                const divTrash = document.createElement("div")
 
               // Configuration de l'image
-                img.src = resultwork.imageUrl
-                img.setAttribute('data-id', resultwork.id) 
+                imgModal.src = resultwork.imageUrl
+                imgModal.setAttribute('data-id', resultwork.id) 
 
                 // Configuration de l'icône de suppression
                 iconTrash.classList.add("fa", "fa-trash-can") // Ajouter les classes FontAwesome
                 iconTrash.setAttribute('data-id', resultwork.id)
+                divTrash.classList.add('divTrash')
+                divTrash.setAttribute('data-id', resultwork.id)
                 figureModal.classList.add('figureParent')
                 figureModal.setAttribute('data-id',resultwork.id)
-                divTrash.setAttribute('data-id', resultwork.id)
-                divTrash.classList.add('divTrash')
+                
 
-              // Ajout des éléments au DOM
+              // Ajout du work dans la modale
               const containerWorks = document.getElementById('works-modal')
                 
                 figureModal.appendChild(imgModal)
                 figureModal.appendChild(divTrash)
                 divTrash.appendChild(iconTrash)
                 containerWorks.appendChild(figureModal)
+
                 
-             
+  iconTrash.addEventListener('click', async function() {
+    // Récupération de l'identifiant de l'élément iconTrash :
+    const workId = this.getAttribute('data-id')
+
+    // Demander confirmation avant d'envoyer la requête DELETE
+    const userConfirmed = confirm("Voulez-vous vraiment supprimer ce projet ?")
+    if (userConfirmed) {
+
+    // Gestion des erreurs avec try...catch
+    try {
+        // Récupérer le token d'authentification stocké dans le localStorage avec getItem
+        const authToken = localStorage.getItem('token')
+        
+
+        // Envoyez une requête DELETE à l'API pour supprimer l'image
+        const response = await fetch(`${worksApi}/${workId}`, {
+            method: 'DELETE',
+            headers: {
+                // Inclure le token d'authentification dans les en-têtes de la requête
+                'Authorization': `Bearer ${authToken}`
+            }
+        });
+
+        if (response.ok) {
+          // Supprimer de la page d'accueil
+          document.getElementById(workId).parentNode.remove();
+          
+          // Supprimer de la modale
+          const modalImageElement = document.querySelector(`#works-modal [data-id="${workId}"]`);
+          if (modalImageElement) {
+              modalImageElement.remove();
+          }
+            alert('Œuvre supprimée avec succès.')
+        } else {
+            alert('Erreur lors de la suppression de l\'œuvre.')
+        }
+    } catch (error) {
+        console.error('Erreur lors de la suppression :', error)
+    }
+  }
+});
+                
               }
             }
       catch(error){
         console.log(error, "erreur")
       }
-       goToIndex(); // Redirection vers la page d'accueil
+       goToModal1(); 
     })
-  function goToIndex() {
-    const modal2 = document.getElementById('modal2');  
-    modal2.style.display = 'none'; 
-    window.location.href = 'index.html'; 
+  function goToModal1() {
+    const modal2 = document.getElementById('modal2') 
+    const modal1 = document.getElementById('modal1')
+    modal2.style.display = 'none'
+    modal1.style.display = 'flex'
+    
   }
 
   

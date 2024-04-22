@@ -1,14 +1,14 @@
-// I) POUR LA PAGE D'ACCUEIL NON CONNECTE
+// I) POUR LA PAGE D'ACCUEIL NON CONNECTE 
 
 //Récupérer les travaux depuis une API avec l'URL de la route du backend
 const worksApi = "http://localhost:5678/api/works" 
 const categoriesApi = "http://localhost:5678/api/categories"
 
-//Sélectionne l'élément là où les travaux et gatégories seront affichés.
+//Sélectionne l'élément là où les travaux et gatégories seront affichés dans le DOM
 const galleryContainer = document.querySelector(".gallery")
 const filtersContainer = document.querySelector(".filters")
 
-//fonction asynchrone pour récupérer les travaux depuis l'API (Faire appel à l'API avec fetch(URL))
+//fonction asynchrone pour récupérer les travaux depuis l'API (envoyer une requête à l'URL de l'API avec fetch(URL))
 async function getWorks() { 
    try{
     const responseJson = await fetch(worksApi)  
@@ -19,9 +19,10 @@ async function getWorks() {
     } 
 }
 
+let allWorks = []
 //Créer dynamiquement les éléments HTML (les travaux ) et les afficher sur la page web.
 async function displayWork() { 
-    const allWorks = await getWorks()
+    allWorks = await getWorks()
 
     galleryContainer.innerHTML = '' 
     
@@ -56,9 +57,10 @@ async function getCategories() {
     }  
 }
 
+let allCategories =[]
 // Fonction asynchrone pour créer dynamiquement les boutons de catégorie
 async function creatCategoryBtn() {
-    const allCategories = await getCategories()
+   allCategories = await getCategories()
     
     // Création d'un bouton pour chaque catégorie récupérée
     allCategories.forEach((category) =>{
@@ -77,12 +79,12 @@ creatCategoryBtn()
 
 //Filtrer les travaux par catégorie avec filter()
 async function filterWorksByCategory(buttonId) {
-    const allWorks = await getWorks()
+    // const allWorks = await getWorks()
     
-    let filteredWorks; // variable pour stocker les travaux filtrés
+    let filteredWorks;
     filteredWorks = allWorks.filter(work => work.categoryId.toString() === buttonId.toString()) // récupère la valeur des id catégorie qui sont égale à la valeur des id btn 
 
-    galleryContainer.innerHTML = '' // Nettoyage de la galerie avant affichage des résultats filtrés
+    galleryContainer.innerHTML = '' // vide le conteneur galleryContainer avant l'affichage des résultats filtrés
     
     // Création et affichage dynamique des travaux filtrés
     filteredWorks.forEach((work) => {
@@ -114,7 +116,9 @@ function creatBtnAll() {
 }
 creatBtnAll()
 
-//  II) POUR LE FORMULAIRE DE CONNECTION
+
+
+//  II) PAGE UTILISATEUR CONNECTER
 
 // Récupération du token d'authentification 
     const userToken=localStorage.getItem('token') 
@@ -139,18 +143,21 @@ creatBtnAll()
 
       })
 
+
+
 // GESTION DES MODALES POUR L'AJOUT ET LA SUPPRESSION DES TRAVAUX
 
     const modal = document.querySelector('.modal-container')
 
 // Ajoutez un écouteur d'événement au bouton ou au lien pour afficher la modale
     iconModify.addEventListener('click', () => {
-        modal.style.display = null
+        modal.style.display = null //affiche la modale 1
+        displayWorksModal()
     })
 
 //fonction asynchrone pour récupérer et afficher les works dans la modal 1
     async function displayWorksModal() {
-        const allWorks = await getWorks()        
+             
         const containerWorksModal1 = document.getElementById('works-modal')
 
         containerWorksModal1.innerHTML = ''
@@ -229,7 +236,7 @@ creatBtnAll()
           });
         })
      }
-displayWorksModal()
+
 
 function closeModal1(){
     //fermeture de la modale en cliquant sur le bouton de fermeture
@@ -258,10 +265,12 @@ closeModal1()
       displayMoadal2()
       form.reset()
       initInputFile()
+      generateCategoryOptions();
       
   })
 
   function displayMoadal2() {
+   
     const modal1 = document.getElementById('modal1')
     modal1.style.display = 'none'
     const modal2 = document.querySelector('.modal-container2')
@@ -306,9 +315,12 @@ const arrowLeft = document.querySelector('.arrow-left')
   })
 
 function displayMoadal1() {
+  
     modal.style.display = 'flex' 
     const modal2 = document.querySelector('.modal-container2')
     modal2.style.display='none'
+    
+    
   }
 
 // Empêcher la propagation de l'événement de clic à partir du contenu de la modale.
@@ -322,10 +334,10 @@ windowModal2.addEventListener('click', function(event) {
 // Création des options du select pour générer une liste déroulante des catégories
 async function generateCategoryOptions() {
   const categorySelect = document.getElementById("selectOptions")
-  const categories = await getCategories() // récupère les catégories de l'API avec fetch()
+  // const categories = await getCategories() // récupère les catégories de l'API avec fetch()
 
   // Parcours la liste des catégories et créer une option pour chaque catégorie
-  categories.forEach(category => {
+  allCategories.forEach(category => {
       const option = document.createElement("option")
       option.value = category.id
       option.textContent = category.name;
@@ -333,7 +345,7 @@ async function generateCategoryOptions() {
   });
 
 }
-generateCategoryOptions();
+
 
 //ajouter un fichier (image) dans la formulaire de la modale 2
 function addFileImg() {
@@ -401,7 +413,8 @@ form.addEventListener('submit', async function(event) {
             throw new Error('La réponse du serveur indique un échec lors de l\'ajout de l\'image.');
           }else{
             let resultwork = await response.json();
-                     
+               
+            allWorks = resultwork
           // Ajout d'un work dans la galerie index sans recharger la page
                 const figure = document.createElement("figure")
                 const img = document.createElement("img");
@@ -478,7 +491,7 @@ form.addEventListener('submit', async function(event) {
           if (modalImageElement) {
               modalImageElement.remove();
           }
-            alert('Œuvre supprimée avec succès.')
+            // alert('Œuvre supprimée avec succès.')
         } else {
             alert('Erreur lors de la suppression de l\'œuvre.')
         }

@@ -59,7 +59,7 @@ async function getCategories() {
 
 let allCategories =[]
 // Fonction asynchrone pour créer dynamiquement les boutons de catégorie
-async function creatCategoryBtn() {
+async function displayCategories() {
    allCategories = await getCategories()
     
     // Création d'un bouton pour chaque catégorie récupérée
@@ -75,7 +75,7 @@ async function creatCategoryBtn() {
         })
     })   
 }
-creatCategoryBtn()
+displayCategories()
 
 //Filtrer les travaux par catégorie avec filter()
 async function filterWorksByCategory(buttonId) {
@@ -147,13 +147,13 @@ creatBtnAll()
 
 // GESTION DES MODALES POUR L'AJOUT ET LA SUPPRESSION DES TRAVAUX
 
-    const modal = document.querySelector('.modal-container')
 
-// Ajoutez un écouteur d'événement au bouton ou au lien pour afficher la modale
-    iconModify.addEventListener('click', () => {
-        modal.style.display = null //affiche la modale 1
-        displayWorksModal()
-    })
+        let modal = document.querySelector('.modal-container')
+
+        iconModify.addEventListener('click', () => {
+            modal.style.display = null //affiche la modale 1
+            displayWorksModal() // Appelle une fonction pour charger le contenu de la modale
+        })
 
 //fonction asynchrone pour récupérer et afficher les works dans la modal 1
     async function displayWorksModal() {
@@ -161,18 +161,18 @@ creatBtnAll()
         const containerWorksModal1 = document.getElementById('works-modal')
 
         containerWorksModal1.innerHTML = ''
-
+      //Création dynamique des éléments HTML
         allWorks.forEach(work => {
           const figure =  document.createElement("figure") 
           const img = document.createElement("img")
           const iconTrash = document.createElement("i")
           const divTrash = document.createElement("div")
 
-          // Configuration de l'image
+      // Configuration de l'image
           img.src = work.imageUrl
           img.setAttribute('data-id', work.id) 
 
-          // Configuration de l'icône de suppression
+      // Configuration de l'icône de suppression
           iconTrash.classList.add("fa", "fa-trash-can") 
           iconTrash.setAttribute('data-id', work.id)
           
@@ -184,13 +184,15 @@ creatBtnAll()
           figure.setAttribute('data-id',work.id)
           
 
-         // Ajout des éléments au DOM
+      //Rattacher les éléments crées à leurs parents 
 
           divTrash.appendChild(iconTrash)
           figure.appendChild(img)
           figure.appendChild(divTrash)
           containerWorksModal1.appendChild(figure)
 
+
+    // APPELLE API POUR SUPPRIMER UN WORK DANS LA MODALE ET LE DOM
 
           iconTrash.addEventListener('click', async function() {
             // Récupération de l'ID de l'élément iconTrash à supprimer
@@ -205,8 +207,9 @@ creatBtnAll()
                   const authToken = localStorage.getItem('token')
                   
           
-                  // Envoyez une requête DELETE à l'API pour supprimer l'image
+                  // Envoyez une requête  DELETE à l'API pour supprimer l'image
                   const response = await fetch(`${worksApi}/${workId}`, {
+
                       method: 'DELETE',
                       headers: {
                           // Inclure le token d'authentification dans les en-têtes de la requête
@@ -215,164 +218,164 @@ creatBtnAll()
                   });
           
                   if (response.ok) {
-                    // L'élément correspondant au workId est supprimé de la page d'accueil 
+                    // Suppression du workId de la page d'accueil DOM
                       document.getElementById(workId).parentNode.remove();
 
-                    // L'élément correspondant au workId est également supprimé de la modale
-                      const modalImageElement = document.querySelector(`#works-modal [data-id="${workId}"]`);
-                      if (modalImageElement) {
-                          modalImageElement.remove();
+                    //  Suppression du workId de la modale
+                      const deleteWorkModal = document.querySelector(`#works-modal [data-id="${workId}"]`);
+                      if (deleteWorkModal) {
+                          deleteWorkModal.remove();
                       }
-                    
-                      // alert('Œuvre supprimée avec succès.')
                   } else {
-                      alert('Erreur lors de la suppression de l\'œuvre.')
+                      alert('Erreur lors de la suppression de l\'élement.')
                     }
 
               } catch (error) {
                   console.error('Erreur lors de la suppression :', error)
                 }
             }
-          });
+          }) //fin suppression 
         })
      }
 
+// FONCTION POUR FERMER LA MODALE 1
+          function closeModal1(){
+              //fermeture de la modale en cliquant sur le bouton Xmark
+              const closeModalButton = document.querySelector('.close-modal-button')
+              closeModalButton.addEventListener('click', function() {
+                  modal.style.display = 'none' // Fermer la modale
+              });
 
-function closeModal1(){
-    //fermeture de la modale en cliquant sur le bouton de fermeture
-    const closeModalButton = document.querySelector('.close-modal-button')
-    closeModalButton.addEventListener('click', function() {
-        modal.style.display = 'none' // Fermer la modale
-    });
-
-    //fermeture de la modale en cliquant  en dehors de la fenêtre modale
-    modal.addEventListener('click', function() {
-        modal.style.display = 'none' // Fermer la modale
-    });
-
-    // Empêche l'événement de clic de se propager à l'élément parent
-    const windowModal1 = document.querySelector('.window-modal') 
-    windowModal1.addEventListener('click', function(event) {
-        event.stopPropagation() 
-    });
-}
-closeModal1()
+              //fermeture de la modale en cliquant  en dehors de la modale
+              modal.addEventListener('click', function() {
+                  modal.style.display = 'none' // Fermer la modale
+              });
 
 
-//SE REDIRIGER VERS LA MODALE 2  et réinitialiser le formulaire 
-  const btnAddModal1 = document.getElementById('add-picture')
-    btnAddModal1.addEventListener('click', function(){
-      displayMoadal2()
-      form.reset()
-      initInputFile()
-      generateCategoryOptions();
-      
-  })
-
-  function displayMoadal2() {
-   
-    const modal1 = document.getElementById('modal1')
-    modal1.style.display = 'none'
-    const modal2 = document.querySelector('.modal-container2')
-    modal2.style.display='flex'
-   }
-
-   // Réinitialiser le champ de fichier quand je click sur précédent
-  function initInputFile() {
-    const inputFile = document.getElementById('plusAjoutPhoto');
-    // Réinitialiser directement le champ de fichier
-    inputFile.value = '';
-    
-    // Réinitialiser l'aperçu de l'image
-    const imagePreview = document.getElementById('imagePreview');
-    imagePreview.style.display = 'none';
-    imagePreview.src = '';
-
-    // Réafficher le bouton "+ Ajouter photo"
-    const ajoutPhoto = document.getElementById("ajoutPhotoSpace");
-    ajoutPhoto.style.display = 'flex';
-  }
-    
-function closeModal2(){
-  const closeModal2Button = document.querySelector('.close-modal2-button') 
-  closeModal2Button.addEventListener('click', function() {
-    const modal2 = document.querySelector('.modal-container2')
-      modal2.style.display = 'none'
-  })
-
-//fermeture de la modale2 en cliquant  en dehors de la fenêtre modale
-    const modal2 = document.getElementById('modal2')
-    modal2.addEventListener('click', function() {
-      modal2.style.display = 'none' 
-  })
-}
-closeModal2()
+              // Empêche l'événement de clic de se propager sur la modale
+              const windowModal1 = document.querySelector('.window-modal') 
+              windowModal1.addEventListener('click', function(event) {
+                  event.stopPropagation() 
+              });
+          }
+          closeModal1()
 
 
-const arrowLeft = document.querySelector('.arrow-left')
-    arrowLeft.addEventListener('click', function(){
-      displayMoadal1()
-  })
+//SE REDIRIGER VERS LA MODALE 2 et  réinitialiser le formulaire 
+          const btnAddModal1 = document.getElementById('add-picture')
+            btnAddModal1.addEventListener('click', function(){
+              displayMoadal2()
+              form.reset() //réinitialisé pour s'assurer que les champs sont vides.
+              initInputFile()
+              generateCategoryOptions()
+              
+          })
 
-function displayMoadal1() {
+  // Fonction pour afficher la modale 2 et cacher la modale 1
+          function displayMoadal2() {
+          
+            const modal1 = document.getElementById('modal1')
+            modal1.style.display = 'none'
+            const modal2 = document.querySelector('.modal-container2')
+            modal2.style.display='flex'
+          }
+
+   // Fonction pour réinitialiser le champ de fichier quand je click sur précédent
+          function initInputFile() {
+            const inputFile = document.getElementById('plusAjoutPhoto')
+            
+            inputFile.value = ''
+            
+            // Réinitialiser l'aperçu de l'image
+            const imagePreview = document.getElementById('imagePreview')
+            imagePreview.style.display = 'none';
+            imagePreview.src = ''
+
+            // Réafficher le bouton "+ Ajouter photo"
+            const ajoutPhoto = document.getElementById("ajoutPhotoSpace")
+            ajoutPhoto.style.display = 'flex'
+          }
   
-    modal.style.display = 'flex' 
-    const modal2 = document.querySelector('.modal-container2')
-    modal2.style.display='none'
-    
-    
-  }
+  //Fonction pour fermer la modale 2
+          function closeModal2(){
+            const closeModal2Button = document.querySelector('.close-modal2-button') 
+            closeModal2Button.addEventListener('click', function() {
+              const modal2 = document.querySelector('.modal-container2')
+                modal2.style.display = 'none'
+            })
 
-// Empêcher la propagation de l'événement de clic à partir du contenu de la modale.
-const windowModal2 = document.querySelector('.window-modal2')
-windowModal2.addEventListener('click', function(event) {
-    event.stopPropagation() // Empêche l'événement de clic de se propager à l'élément parent
-});
+          //fermeture de la modale2 en cliquant  en dehors de la fenêtre modale
+              const modal2 = document.getElementById('modal2')
+              modal2.addEventListener('click', function() {
+                modal2.style.display = 'none' 
+            })
+          }
+          closeModal2()
 
-// Ajouter des images dans la gallery depuis un formulaire (envoyer une image au serveur depuis un formulaire)
+// Retour  vers modale 1 avec la flèche
+        const arrowLeft = document.querySelector('.arrow-left')
+            arrowLeft.addEventListener('click', function(){
+              displayMoadal1()
+          })
 
-// Création des options du select pour générer une liste déroulante des catégories
-async function generateCategoryOptions() {
-  const categorySelect = document.getElementById("selectOptions")
-  // const categories = await getCategories() // récupère les catégories de l'API avec fetch()
+        function displayMoadal1() {
+            modal.style.display = 'flex' 
+            const modal2 = document.querySelector('.modal-container2')
+            modal2.style.display='none'
+          }
 
-  // Parcours la liste des catégories et créer une option pour chaque catégorie
-  allCategories.forEach(category => {
-      const option = document.createElement("option")
-      option.value = category.id
-      option.textContent = category.name;
-      categorySelect.appendChild(option);
-  });
-
-}
+  // Empêcher la propagation de l'événement de clic à partir du contenu de la modale.
+        const windowModal2 = document.querySelector('.window-modal2')
+        windowModal2.addEventListener('click', function(event) {
+            event.stopPropagation() 
+        });
 
 
-//ajouter un fichier (image) dans la formulaire de la modale 2
-function addFileImg() {
-  const inputFile=document.getElementById('plusAjoutPhoto')
-  const imagePreview = document.getElementById('imagePreview')
+// FORMULAIRE: ENVOYER UNE IMAGE AU SERVEUR DEPUIS UN FORMULAIRE VIA LA MODALE 2
 
-inputFile.addEventListener('change', ()=>{
-  const file = inputFile.files[0]
+// Création des options "select " pour générer une liste déroulante des catégories
+        async function generateCategoryOptions() {
+          
+           let categorySelect = document.getElementById("selectOptions")
+         
+          // Parcours la liste des catégories et créer une option pour chaque catégorie
+          allCategories.forEach(category => {
+             
+          const option = document.createElement("option")
+              option.value = category.id
+              option.textContent = category.name;
+              categorySelect.appendChild(option);
+          });
 
-    if (file) {
-    //  Créer un URL pour l'image sélectionné
-     const imageUrl = URL.createObjectURL(file)
-    //// Définissez l'URL comme source de l'élément img pour afficher l'image
-     imagePreview.src = imageUrl
-     imagePreview.style.display = 'block' // Montrer l'élément img
+        }
 
-     const ajoutPhoto =document.getElementById("ajoutPhotoSpace") 
-     ajoutPhoto.style.display='none' //Cacher le bouton + ajouter photo
-    }
-  })
-}
-addFileImg()
+
+// Fonction pour ajouter un fichier (image) dans le formulaire  modale 2
+        function addFileImg() {
+          const inputFile=document.getElementById('plusAjoutPhoto')
+          const imagePreview = document.getElementById('imagePreview')
+
+        inputFile.addEventListener('change', ()=>{
+          const file = inputFile.files[0]
+
+            if (file) {
+            //  Créer un URL pour l'image sélectionné
+            const imageUrl = URL.createObjectURL(file)
+            //// Définissez l'URL comme source de l'élément img pour afficher l'image
+            imagePreview.src = imageUrl
+            imagePreview.style.display = 'block' // Montrer l'élément img
+
+            const ajoutPhoto =document.getElementById("ajoutPhotoSpace") 
+            ajoutPhoto.style.display='none' //Cacher le bouton + ajouter photo
+            }
+          })
+        }
+        addFileImg()
 
 
 // Préparation du formulaire pour l'envoi
 
-// Ajout d'une image dans l'index et dans la modale 1 après soumission du formulaire
+// Ajout d'une image dans DOM et dans la modale 1 après soumission du formulaire
 
 const form = document.getElementById('form-add-picture')
 form.addEventListener('submit', async function(event) {
@@ -487,9 +490,9 @@ form.addEventListener('submit', async function(event) {
           document.getElementById(workId).parentNode.remove();
           
           // Supprimer de la modale
-          const modalImageElement = document.querySelector(`#works-modal [data-id="${workId}"]`);
-          if (modalImageElement) {
-              modalImageElement.remove();
+          const deleteWorkModal = document.querySelector(`#works-modal [data-id="${workId}"]`);
+          if (deleteWorkModal) {
+              deleteWorkModal.remove();
           }
             // alert('Œuvre supprimée avec succès.')
         } else {
@@ -513,6 +516,7 @@ form.addEventListener('submit', async function(event) {
     const modal1 = document.getElementById('modal1')
     modal2.style.display = 'none'
     modal1.style.display = 'flex'
+    
     
   }
 

@@ -1,7 +1,8 @@
 
 
+// SE CONNECTER VIA LE FORMULAIRE DE LA PAGE DE CONNECTION
 
-// Ajouter l'écouteur d'événements au formulaire
+// Ajouter l'écouteur d'événements au formulaire ciblé
 const formulaireLogin = document.querySelector(".formulaire-login");
 
 if (formulaireLogin) {

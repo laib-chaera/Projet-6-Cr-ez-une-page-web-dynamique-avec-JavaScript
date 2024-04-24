@@ -159,8 +159,9 @@ creatBtnAll()
     async function displayWorksModal() {
              
         const containerWorksModal1 = document.getElementById('works-modal')
-
         containerWorksModal1.innerHTML = ''
+      const allWorks= await getWorks()
+        
       //Création dynamique des éléments HTML
         allWorks.forEach(work => {
           const figure =  document.createElement("figure") 
@@ -224,7 +225,8 @@ creatBtnAll()
                     //  Suppression du workId de la modale
                       const deleteWorkModal = document.querySelector(`#works-modal [data-id="${workId}"]`);
                       if (deleteWorkModal) {
-                          deleteWorkModal.remove();
+                          // deleteWorkModal.remove();
+                          deleteWorkModal.parentNode.removeChild(deleteWorkModal)
                       }
                   } else {
                       alert('Erreur lors de la suppression de l\'élement.')
@@ -294,6 +296,7 @@ creatBtnAll()
             // Réafficher le bouton "+ Ajouter photo"
             const ajoutPhoto = document.getElementById("ajoutPhotoSpace")
             ajoutPhoto.style.display = 'flex'
+
           }
   
   //Fonction pour fermer la modale 2
@@ -337,7 +340,7 @@ creatBtnAll()
         async function generateCategoryOptions() {
           
            let categorySelect = document.getElementById("selectOptions")
-         
+         categorySelect.innerHTML=''
           // Parcours la liste des catégories et créer une option pour chaque catégorie
           allCategories.forEach(category => {
              
@@ -418,14 +421,15 @@ form.addEventListener('submit', async function(event) {
             let resultwork = await response.json();
                
             allWorks = resultwork
-          // Ajout d'un work dans la galerie index sans recharger la page
+            
+          // Création et ajout d'un work dans le DOM sans recharger la page
                 const figure = document.createElement("figure")
                 const img = document.createElement("img");
                 const figcaption = document.createElement("figcaption")
                 
-                img.src = resultwork.imageUrl
-                img.id = resultwork.id
-                figcaption.textContent = resultwork.title
+                img.src =allWorks.imageUrl
+                img.id = allWorks.id
+                figcaption.textContent = allWorks.title
                 img.alt = figcaption.textContent
 
                 figure.appendChild(img)
@@ -441,16 +445,16 @@ form.addEventListener('submit', async function(event) {
                 const divTrash = document.createElement("div")
 
               // Configuration de l'image
-                imgModal.src = resultwork.imageUrl
-                imgModal.setAttribute('data-id', resultwork.id) 
+                imgModal.src = allWorks.imageUrl
+                imgModal.setAttribute('data-id', allWorks.id) 
 
                 // Configuration de l'icône de suppression
                 iconTrash.classList.add("fa", "fa-trash-can") // Ajouter les classes FontAwesome
-                iconTrash.setAttribute('data-id', resultwork.id)
+                iconTrash.setAttribute('data-id', allWorks.id)
                 divTrash.classList.add('divTrash')
-                divTrash.setAttribute('data-id', resultwork.id)
+                divTrash.setAttribute('data-id', allWorks.id)
                 figureModal.classList.add('figureParent')
-                figureModal.setAttribute('data-id',resultwork.id)
+                figureModal.setAttribute('data-id',allWorks.id)
                 
 
               // Ajout du work dans la modale
@@ -492,7 +496,8 @@ form.addEventListener('submit', async function(event) {
           // Supprimer de la modale
           const deleteWorkModal = document.querySelector(`#works-modal [data-id="${workId}"]`);
           if (deleteWorkModal) {
-              deleteWorkModal.remove();
+              // deleteWorkModal.remove();
+              deleteWorkModal.parentNode.removeChild(deleteWorkModal)
           }
             // alert('Œuvre supprimée avec succès.')
         } else {
@@ -522,41 +527,3 @@ form.addEventListener('submit', async function(event) {
 
   
  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

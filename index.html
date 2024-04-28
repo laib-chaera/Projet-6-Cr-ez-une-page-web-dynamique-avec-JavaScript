@@ -21,9 +21,14 @@
 	<h1>Sophie Bluel <span>Architecte d'intérieur</span></h1>
 	<nav>
 		<ul>
-			<a href="#projet"><li>projets</li></a>
+			<!-- <a href="#projet"><li>projets</li></a>
 			<a href="#contact"><li>contact</li></a>
 			<a href="login.html"><li id="loginNav">login</li></a>
+			<li><img src="./assets/icons/instagram.png" alt="Instagram"></li> -->
+
+			<li><a href="#projet">projets</a></li>
+			<li><a href="#contact">contact</a></li>
+			<li><a href="login.html" id="loginNav">login</a></li>
 			<li><img src="./assets/icons/instagram.png" alt="Instagram"></li>
 		</ul>
 	</nav>
@@ -50,10 +55,10 @@
 
 			<div class="iconModify" style="visibility:hidden;">
 				<div>
-					<a href="#modale1" class="modify">modifier</a>
+					<a href="#modal1" class="modify">modifier</a>
 				</div>
 				<div>
-					<a href="#modale1" class="icone"><i class="fa-regular fa-pen-to-square"></i></a>
+					<a href="#modal1" class="icone"><i class="fa-regular fa-pen-to-square"></i></a>
 				</div>
 			</div>
         </div>
@@ -93,7 +98,7 @@
 						<div class="ajoutPhotoSpace" id="ajoutPhotoSpace">
 							<i class="fa-sharp fa-regular fa-image" id="iconeLandscape"></i> 
 							<label for="plusAjoutPhoto" > + Ajouter photo</label>							
-							<input type="file" name="image" id="plusAjoutPhoto" accept="image/png, image/jpg" class="inputForm" style="opacity: 0;" required>
+							<input type="file" name="image" id="plusAjoutPhoto" accept="image/png, image/jpg" class="inputForm" style="opacity: 0;" >
 							
 							<p id="tailleFichier">jpg, png : 4mo max</p>
 						</div>
@@ -106,13 +111,14 @@
 						<div class="input-title-categ">
 							<div class="input">
 								<label for="title"> Titre</label>
-								<input type="text" name="title" id="title" required>
+								<input type="text" name="title" id="title" >
 							</div>
 								
 							<h3>Catégories</h3>
 							<div class="choix-catego-img">
 								<!-- SELECT && OPTIONS -->
-								<select id="selectOptions" name="category"> 
+								<select id="selectOptions" name="category"  > 
+									
 									<!-- Options générées dynamiquement avec JavaScript -->
 									
 								</select>							  

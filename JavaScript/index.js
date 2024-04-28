@@ -8,6 +8,8 @@ const categoriesApi = "http://localhost:5678/api/categories"
 const galleryContainer = document.querySelector(".gallery")
 const filtersContainer = document.querySelector(".filters")
 
+console.log(galleryContainer)
+console.log(filtersContainer)
 //fonction asynchrone pour récupérer les travaux depuis l'API (envoyer une requête à l'URL de l'API avec fetch(URL))
 async function getWorks() { 
    try{
@@ -20,29 +22,32 @@ async function getWorks() {
 }
 
 let allWorks = []
-//Créer dynamiquement les éléments HTML (les travaux ) et les afficher sur la page web.
-async function displayWork() { 
-    allWorks = await getWorks()
+    //Créer dynamiquement les éléments HTML (les travaux ) et les afficher sur la page web.
+    async function displayWork() { 
+        allWorks = await getWorks()
+        console.log(allWorks)
 
-    galleryContainer.innerHTML = '' 
-    
-    allWorks.forEach((work) => {//Parcourt chaque objet dans le tableau (les données récupérées.) pour créer les éléments
-            const figure = document.createElement("figure")
-            const img = document.createElement("img")
-            const figcaption = document.createElement("figcaption")
-            
-            img.src = work.imageUrl
-            img.id = work.id
-            figcaption.textContent = work.title
-            img.alt = figcaption.textContent
+        galleryContainer.innerHTML = '' 
+        
+        allWorks.forEach((work) => {//Parcourt chaque objet dans le tableau (les données récupérées.) pour créer les éléments
+                const figure = document.createElement("figure")
+                const img = document.createElement("img")
+                const figcaption = document.createElement("figcaption")
+                
+                img.src = work.imageUrl
+                img.id = work.id
+                figcaption.textContent = work.title
+                img.alt = figcaption.textContent
 
-            // Assemblage des éléments et ajout à la galerie
-            figure.appendChild(img)
-            figure.appendChild(figcaption)
-            galleryContainer.appendChild(figure)
-    }) 
-}
-displayWork()
+                // Assemblage des éléments et ajout à la galerie
+                figure.appendChild(img)
+                figure.appendChild(figcaption)
+                galleryContainer.appendChild(figure)
+        }) 
+        
+    }
+   
+    displayWork()
 
 //AJOUTER LES FILTRES POUR AFFICHER LES TRAVAUX PAR CATÉGORIE
 
@@ -59,60 +64,89 @@ async function getCategories() {
 
 let allCategories =[]
 // Fonction asynchrone pour créer dynamiquement les boutons de catégorie
-async function displayCategories() {
-   allCategories = await getCategories()
-    
-    // Création d'un bouton pour chaque catégorie récupérée
-    allCategories.forEach((category) =>{
-        const btn = document.createElement("button")
-        btn.textContent = category.name.toUpperCase()
-        btn.id = category.id
-        filtersContainer.appendChild(btn)
+    async function displayCategories() {
+      allCategories = await getCategories()
+        
+        // Création d'un bouton pour chaque catégorie récupérée
+        allCategories.forEach((category) =>{
+            const btn = document.createElement("button")
+            btn.textContent = category.name.toUpperCase()
+            btn.id = category.id
+            filtersContainer.appendChild(btn)
 
-        // Ajout d'un écouteur d'événement sur le bouton pour filtrer
-        btn.addEventListener("click", ()=>{
-            filterWorksByCategory(btn.id)// Appeler la fonction avec l'id de la catégorie comme argument 
-        })
-    })   
-}
-displayCategories()
+            // Ajout d'un écouteur d'événement sur le bouton pour filtrer
+            if (btn) {
+              btn.addEventListener("click", () => {
+                  filterWorksByCategory(btn.id)
+                            
+              })
+              console.log(btn)
+              console.log(filterWorksByCategory)  
+            }
+        })   
+    }
+    displayCategories()
 
-//Filtrer les travaux par catégorie avec filter()
-async function filterWorksByCategory(buttonId) {
-    // const allWorks = await getWorks()
-    
-    let filteredWorks;
-    filteredWorks = allWorks.filter(work => work.categoryId.toString() === buttonId.toString()) // récupère la valeur des id catégorie qui sont égale à la valeur des id btn 
 
-    galleryContainer.innerHTML = '' // vide le conteneur galleryContainer avant l'affichage des résultats filtrés
-    
-    // Création et affichage dynamique des travaux filtrés
-    filteredWorks.forEach((work) => {
-        const figure = document.createElement("figure")
-        const img = document.createElement("img")
-        const figcaption = document.createElement("figcaption")
-       
-        img.src = work.imageUrl
-        figcaption.textContent = work.title
-        img.alt = figcaption.textContent
+//Fonction pour filtrer les travaux par catégorie avec filter()
+      async function filterWorksByCategory(buttonId) {
+        
+          let filteredWorks;
+          filteredWorks = allWorks.filter(work => work.categoryId.toString() === buttonId.toString()) // récupère la valeur des id catégorie qui sont égale à la valeur des id btn 
+          
+          galleryContainer.innerHTML = '' // vide le conteneur galleryContainer avant l'affichage des résultats filtrés
+          
+          // Création et affichage dynamique des travaux filtrés
+          filteredWorks.forEach((work) => {
+              const figure = document.createElement("figure")
+              const img = document.createElement("img")
+              const figcaption = document.createElement("figcaption")
+            
+              img.src = work.imageUrl
+              figcaption.textContent = work.title
+              img.alt = figcaption.textContent
 
-        figure.appendChild(img)
-        figure.appendChild(figcaption)
-        galleryContainer.appendChild(figure)
-    })
-}
+              figure.appendChild(img)
+              figure.appendChild(figcaption)
+              galleryContainer.appendChild(figure)
+          })
+      }
 
 // Création du bouton "Tous" pour afficher tous les travaux
-function creatBtnAll() {
-    const allBtn = document.createElement("button")
-    allBtn.setAttribute("data-id", "0")
-    allBtn.textContent = "Tous";
-    filtersContainer.appendChild(allBtn)
 
-    //Ajouter l'événement click sur le bouton "tous"
-    allBtn.addEventListener('click', ()=>{ 
-        displayWork()
-  })
+function creatBtnAll() { 
+  const allBtn = document.createElement("button");
+  allBtn.setAttribute("data-id", "0");
+  allBtn.textContent = "Tous";
+  filtersContainer.appendChild(allBtn);
+
+  // Ajouter l'événement click sur le bouton "Tous"
+  if (allBtn) {
+      allBtn.addEventListener('click', () => { 
+          // Vérifier si le tableau allWorks contient des éléments avant d'exécuter le code 
+          if (allWorks.length > 0) {
+              // Utiliser directement les travaux déjà récupérés
+              galleryContainer.innerHTML = '' 
+              allWorks.forEach((work) => {
+                  const figure = document.createElement("figure")
+                  const img = document.createElement("img")
+                  const figcaption = document.createElement("figcaption")
+                  
+                  img.src = work.imageUrl
+                  img.id = work.id
+                  figcaption.textContent = work.title
+                  img.alt = figcaption.textContent
+
+                  figure.appendChild(img)
+                  figure.appendChild(figcaption)
+                  galleryContainer.appendChild(figure)
+              });
+          } else {
+              // Si les travaux ne sont pas encore récupérés, alors les récupérer et afficher
+              displayWork();
+          }
+      });
+  }
 }
 creatBtnAll()
 
@@ -137,33 +171,41 @@ creatBtnAll()
      } 
     
 //Déconnexion
-      loginButton.addEventListener('click', function(){
-        localStorage.removeItem('token')
-        window.location.href = 'index.html'
+    if (loginButton) {
+          loginButton.addEventListener('click', function(){
+          localStorage.removeItem('token')
+          window.location.href = 'index.html'
 
       })
+      
+    }
+      
 
 
 
 // GESTION DES MODALES POUR L'AJOUT ET LA SUPPRESSION DES TRAVAUX
 
-
+//MODALE 1 QUI AFFICHE LES TRAVAUX
         let modal = document.querySelector('.modal-container')
 
         iconModify.addEventListener('click', () => {
             modal.style.display = null //affiche la modale 1
-            displayWorksModal() // Appelle une fonction pour charger le contenu de la modale
+            displayWorksModal(allWorks) //  les données contenues dans allWorks sont passées au paramètre allWorksData.
+            console.log(allWorks)
+           
         })
 
 //fonction asynchrone pour récupérer et afficher les works dans la modal 1
-    async function displayWorksModal() {
-             
-        const containerWorksModal1 = document.getElementById('works-modal')
-        containerWorksModal1.innerHTML = ''
-      const allWorks= await getWorks()
+    async function displayWorksModal(allWorksData) {
         
-      //Création dynamique des éléments HTML
-        allWorks.forEach(work => {
+        const containerWorksModal1 = document.getElementById("works-modal")
+        containerWorksModal1.innerHTML = ''
+        // const allWorks= await getWorks()
+
+        if (Array.isArray(allWorksData)){
+          //Création dynamique des éléments HTML
+        allWorksData.forEach((work) => {
+          
           const figure =  document.createElement("figure") 
           const img = document.createElement("img")
           const iconTrash = document.createElement("i")
@@ -198,47 +240,55 @@ creatBtnAll()
           iconTrash.addEventListener('click', async function() {
             // Récupération de l'ID de l'élément iconTrash à supprimer
             const workId = this.getAttribute('data-id')
+            console.log(workId)
         
             // Demander confirmation avant d'envoyer la requête DELETE A LA BASE DE DONNEES
             const userConfirmed = confirm("Voulez-vous vraiment supprimer ce projet ?")
             if (userConfirmed) {
-        
-              try {
-                  // Récupérer le token avant d'envoyer la requête
-                  const authToken = localStorage.getItem('token')
-                  
-          
-                  // Envoyez une requête  DELETE à l'API pour supprimer l'image
-                  const response = await fetch(`${worksApi}/${workId}`, {
-
-                      method: 'DELETE',
-                      headers: {
-                          // Inclure le token d'authentification dans les en-têtes de la requête
-                          'Authorization': `Bearer ${authToken}`
-                      }
-                  });
-          
-                  if (response.ok) {
-                    // Suppression du workId de la page d'accueil DOM
-                      document.getElementById(workId).parentNode.remove();
-
-                    //  Suppression du workId de la modale
-                      const deleteWorkModal = document.querySelector(`#works-modal [data-id="${workId}"]`);
-                      if (deleteWorkModal) {
-                          // deleteWorkModal.remove();
-                          deleteWorkModal.parentNode.removeChild(deleteWorkModal)
-                      }
-                  } else {
-                      alert('Erreur lors de la suppression de l\'élement.')
-                    }
-
-              } catch (error) {
-                  console.error('Erreur lors de la suppression :', error)
-                }
+              deleteWorks(workId)             
             }
           }) //fin suppression 
+          
         })
+
+        }
+      
      }
+     async function deleteWorks(workId) {
+              try {
+                // Récupérer le token avant d'envoyer la requête
+                const authToken = localStorage.getItem('token')
+                
+                // Envoyez une requête  DELETE à l'API pour supprimer l'image
+                const response = await fetch(`${worksApi}/${workId}`, {
+
+                    method: 'DELETE',
+                    headers: {
+                        // Inclure le token d'authentification dans les en-têtes de la requête
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+
+                if (response.ok) {
+                  // Suppression du work de la page d'accueil DOM
+
+                    document.getElementById(workId).parentNode.remove(workId);
+
+                  //  Suppression du work de la modale
+                  const deleteWorkModal = document.querySelector(`#works-modal [data-id="${workId}"]`);
+                  
+                    if (deleteWorkModal) {
+                        // deleteWorkModal.remove();
+                        deleteWorkModal.parentNode.removeChild(deleteWorkModal)
+                    }
+                } else {
+                    alert('Erreur lors de la suppression de l\'élement.')
+                  }
+
+            } catch (error) {
+                console.error('Erreur lors de la suppression :', error)
+              }
+    }
 
 // FONCTION POUR FERMER LA MODALE 1
           function closeModal1(){
@@ -267,7 +317,7 @@ creatBtnAll()
           const btnAddModal1 = document.getElementById('add-picture')
             btnAddModal1.addEventListener('click', function(){
               displayMoadal2()
-              form.reset() //réinitialisé pour s'assurer que les champs sont vides.
+              form.reset() //réinitialisé le titre du formulaire.
               initInputFile()
               generateCategoryOptions()
               
@@ -312,27 +362,25 @@ creatBtnAll()
               modal2.addEventListener('click', function() {
                 modal2.style.display = 'none' 
             })
+          // Empêcher la propagation de l'événement de clic à partir du contenu de la modale.
+              const windowModal2 = document.querySelector('.window-modal2')
+              windowModal2.addEventListener('click', function(event) {
+                  event.stopPropagation() 
+            });
           }
           closeModal2()
 
 // Retour  vers modale 1 avec la flèche
         const arrowLeft = document.querySelector('.arrow-left')
             arrowLeft.addEventListener('click', function(){
-              displayMoadal1()
+              displayModal1()
           })
 
-        function displayMoadal1() {
+        function displayModal1() {
             modal.style.display = 'flex' 
             const modal2 = document.querySelector('.modal-container2')
             modal2.style.display='none'
           }
-
-  // Empêcher la propagation de l'événement de clic à partir du contenu de la modale.
-        const windowModal2 = document.querySelector('.window-modal2')
-        windowModal2.addEventListener('click', function(event) {
-            event.stopPropagation() 
-        });
-
 
 // FORMULAIRE: ENVOYER UNE IMAGE AU SERVEUR DEPUIS UN FORMULAIRE VIA LA MODALE 2
 
@@ -340,15 +388,15 @@ creatBtnAll()
         async function generateCategoryOptions() {
           
            let categorySelect = document.getElementById("selectOptions")
-         categorySelect.innerHTML=''
+              categorySelect.innerHTML=''
           // Parcours la liste des catégories et créer une option pour chaque catégorie
-          allCategories.forEach(category => {
+              allCategories.forEach((category)=> {
              
-          const option = document.createElement("option")
-              option.value = category.id
-              option.textContent = category.name;
-              categorySelect.appendChild(option);
-          });
+              const option = document.createElement("option")
+                  option.value = category.id
+                  option.textContent = category.name;
+                  categorySelect.appendChild(option);
+              });
 
         }
 
@@ -366,17 +414,17 @@ creatBtnAll()
             const imageUrl = URL.createObjectURL(file)
             //// Définissez l'URL comme source de l'élément img pour afficher l'image
             imagePreview.src = imageUrl
-            imagePreview.style.display = 'block' // Montrer l'élément img
+            imagePreview.style.display = 'block' // afficher l'élément img avec le src
 
             const ajoutPhoto =document.getElementById("ajoutPhotoSpace") 
-            ajoutPhoto.style.display='none' //Cacher le bouton + ajouter photo
+            ajoutPhoto.style.display='none' 
             }
           })
         }
         addFileImg()
 
 
-// Préparation du formulaire pour l'envoi
+// PREPARATION DU FORMULAIRE POUR L'ENVOI d'un projet
 
 // Ajout d'une image dans DOM et dans la modale 1 après soumission du formulaire
 
@@ -388,13 +436,14 @@ form.addEventListener('submit', async function(event) {
     const title = document.getElementById("title").value
     const categoryId = document.getElementById("selectOptions").value
     const inputFile = document.getElementById("plusAjoutPhoto")
-    const imageFile = inputFile.files[0]//récupère le fichier (image) sélectionné avec le bouton +Ajouter photo
+    const imageFile = inputFile.files[0]//récupère le fichier (image) 
 
-      //Vérifier s'il y a bien des valeurs retournées si non, retourner une erreur
-      if (!title || !categoryId || !imageFile) {
-        console.error("Veuillez remplir tous les champs du formulaire.")
-        return; //retour et affiche l'error ci-dessus dans la console
-      } 
+      //Vérifier s'il y a bien des valeurs retournées pour les champs si non, retourner une erreur
+       if (!title || !categoryId || !imageFile) {
+        // Affichage d'un message d'erreur
+        alert("Veuillez remplir tous les champs du formulaire.")
+        return
+    }
       //si pas d'erreur, créer un objet FormData
         const formData = new FormData()
         formData.append('title', title)
@@ -419,10 +468,11 @@ form.addEventListener('submit', async function(event) {
             throw new Error('La réponse du serveur indique un échec lors de l\'ajout de l\'image.');
           }else{
             let resultwork = await response.json();
-               
-            allWorks = resultwork
             
-          // Création et ajout d'un work dans le DOM sans recharger la page
+               
+            allWorks = resultwork //mettre à jour le tableau, il contien l'image ajoutée uniquement
+           
+          // Création et ajout d'un work dans la galerie sans recharger la page
                 const figure = document.createElement("figure")
                 const img = document.createElement("img");
                 const figcaption = document.createElement("figcaption")
@@ -438,7 +488,7 @@ form.addEventListener('submit', async function(event) {
 
              
 
-          // Création d'un work dans la modal sans recharger la page
+          // Création d'un work dans la modale sans recharger la page
                 const figureModal =  document.createElement("figure") 
                 const imgModal = document.createElement("img")
                 const iconTrash = document.createElement("i")
@@ -465,65 +515,36 @@ form.addEventListener('submit', async function(event) {
                 divTrash.appendChild(iconTrash)
                 containerWorks.appendChild(figureModal)
 
-                
-  iconTrash.addEventListener('click', async function() {
-    // Récupération de l'identifiant de l'élément iconTrash :
-    const workId = this.getAttribute('data-id')
+                iconTrash.addEventListener('click', async function() {
+                  const allworkId = this.getAttribute('data-id')
 
-    // Demander confirmation avant d'envoyer la requête DELETE
-    const userConfirmed = confirm("Voulez-vous vraiment supprimer ce projet ?")
-    if (userConfirmed) {
-
-    // Gestion des erreurs avec try...catch
-    try {
-        // Récupérer le token d'authentification stocké dans le localStorage avec getItem
-        const authToken = localStorage.getItem('token')
-        
-
-        // Envoyez une requête DELETE à l'API pour supprimer l'image
-        const response = await fetch(`${worksApi}/${workId}`, {
-            method: 'DELETE',
-            headers: {
-                // Inclure le token d'authentification dans les en-têtes de la requête
-                'Authorization': `Bearer ${authToken}`
-            }
-        });
-
-        if (response.ok) {
-          // Supprimer de la page d'accueil
-          document.getElementById(workId).parentNode.remove();
-          
-          // Supprimer de la modale
-          const deleteWorkModal = document.querySelector(`#works-modal [data-id="${workId}"]`);
-          if (deleteWorkModal) {
-              // deleteWorkModal.remove();
-              deleteWorkModal.parentNode.removeChild(deleteWorkModal)
-          }
-            // alert('Œuvre supprimée avec succès.')
-        } else {
-            alert('Erreur lors de la suppression de l\'œuvre.')
-        }
-    } catch (error) {
-        console.error('Erreur lors de la suppression :', error)
-    }
-  }
-});
-                
+                  //Demander confirmation avant d'envoyer la requête DELETE
+                      const userConfirmed = confirm("Voulez-vous vraiment supprimer ce projet ?")
+                      if (userConfirmed) {
+                          deleteWorks(allworkId) 
+                      }
+                })
+  
               }
             }
       catch(error){
         console.log(error, "erreur")
       }
-       goToModal1(); 
+
+       displayModal1()
+      //  displayWorksModal()
     })
-  function goToModal1() {
-    const modal2 = document.getElementById('modal2') 
-    const modal1 = document.getElementById('modal1')
-    modal2.style.display = 'none'
-    modal1.style.display = 'flex'
+
+    // let modal = document.querySelector('.modal-container');
+    let modalOpened = false; // Ajoutez cette variable pour suivre l'état de la modale
     
-    
-  }
+    iconModify.addEventListener('click', () => {
+        modal.style.display = null; // Affiche la modale 1
+        if (!modalOpened) {
+            displayWorksModal(); // Appelle la fonction pour charger le contenu de la modale seulement si elle n'a pas été ouverte précédemment
+            modalOpened = true; // Marque la modale comme ouverte
+        }
+    });
 
   
  

@@ -24,16 +24,12 @@
         <section id="login">
             <h2>Log In</h2>
 
-            <form action="#"method="post" class="formulaire-login">
-
-                <label for="email">E-mail </label>
-                <input type="email" name="email" id="email"  required>
-
-                <label for="password"> Mot de passe</label>
-                <input type="password" name="password" id="password"  required>
-
+            <form action="#" method="post" class="formulaire-login">
+                <label for="email">E-mail</label>
+                <input type="email" name="email" id="email" autocomplete="email" required>
+                <label for="password">Mot de passe</label>
+                <input type="password" name="password" id="password" autocomplete="current-password" required>
                 <input type="submit" value="Se connecter">
-               
                 <a href="#"><p class="password">Mot de passe oublié</p></a>
             </form>
 

@@ -195,13 +195,24 @@ creatBtnAll()
            
         })
 
+        let modalOpened = false; // Ajoutez cette variable pour suivre l'état de la modale
+    
+    // iconModify.addEventListener('click', () => {
+    //     modal.style.display = null; // Affiche la modale 1
+    //     if (!modalOpened) {
+    //         displayWorksModal(allWorks); // Appelle la fonction pour charger le contenu de la modale seulement si elle n'a pas été ouverte précédemment
+    //         modalOpened = true; // Marque la modale comme ouverte
+    //     }
+    // });
+
 //fonction asynchrone pour récupérer et afficher les works dans la modal 1
-    async function displayWorksModal(allWorksData) {
+    function displayWorksModal(allWorksData) {
         
         const containerWorksModal1 = document.getElementById("works-modal")
         containerWorksModal1.innerHTML = ''
         // const allWorks= await getWorks()
 
+console.log("display",allWorksData)
         if (Array.isArray(allWorksData)){
           //Création dynamique des éléments HTML
         allWorksData.forEach((work) => {
@@ -470,16 +481,16 @@ form.addEventListener('submit', async function(event) {
             let resultwork = await response.json();
             
                
-            allWorks = resultwork //mettre à jour le tableau, il contien l'image ajoutée uniquement
+            allWorks.push(resultwork ) //mettre à jour le tableau, il contien l'image ajoutée uniquement
            
           // Création et ajout d'un work dans la galerie sans recharger la page
                 const figure = document.createElement("figure")
                 const img = document.createElement("img");
                 const figcaption = document.createElement("figcaption")
                 
-                img.src =allWorks.imageUrl
-                img.id = allWorks.id
-                figcaption.textContent = allWorks.title
+                img.src =resultwork.imageUrl
+                img.id = resultwork.id
+                figcaption.textContent = resultwork.title
                 img.alt = figcaption.textContent
 
                 figure.appendChild(img)
@@ -495,16 +506,16 @@ form.addEventListener('submit', async function(event) {
                 const divTrash = document.createElement("div")
 
               // Configuration de l'image
-                imgModal.src = allWorks.imageUrl
-                imgModal.setAttribute('data-id', allWorks.id) 
+                imgModal.src = resultwork.imageUrl
+                imgModal.setAttribute('data-id', resultwork.id) 
 
                 // Configuration de l'icône de suppression
                 iconTrash.classList.add("fa", "fa-trash-can") // Ajouter les classes FontAwesome
-                iconTrash.setAttribute('data-id', allWorks.id)
+                iconTrash.setAttribute('data-id', resultwork.id)
                 divTrash.classList.add('divTrash')
-                divTrash.setAttribute('data-id', allWorks.id)
+                divTrash.setAttribute('data-id', resultwork.id)
                 figureModal.classList.add('figureParent')
-                figureModal.setAttribute('data-id',allWorks.id)
+                figureModal.setAttribute('data-id',resultwork.id)
                 
 
               // Ajout du work dans la modale
@@ -536,15 +547,7 @@ form.addEventListener('submit', async function(event) {
     })
 
     // let modal = document.querySelector('.modal-container');
-    let modalOpened = false; // Ajoutez cette variable pour suivre l'état de la modale
     
-    iconModify.addEventListener('click', () => {
-        modal.style.display = null; // Affiche la modale 1
-        if (!modalOpened) {
-            displayWorksModal(); // Appelle la fonction pour charger le contenu de la modale seulement si elle n'a pas été ouverte précédemment
-            modalOpened = true; // Marque la modale comme ouverte
-        }
-    });
 
   
  

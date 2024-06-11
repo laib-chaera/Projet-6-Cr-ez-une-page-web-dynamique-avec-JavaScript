@@ -422,3 +422,5 @@ form.addEventListener('submit', async function (event) {
 
     displayModal1()
 })
+
+// GESTION DE LA CONNEXION
